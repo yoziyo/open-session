@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.next/
+.turbo/
+.vite/
+*.tsbuildinfo
+*.tgz
+
+# Test and coverage artifacts
+coverage/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Local environment
+.env*
+!.env.example
+
+# Hosting / deployment
+.vercel/
+.netlify/
+
+# Local agent/editor state
+.omx/
+.codex/
+.vscode/
+
+# OS / editor noise
+.DS_Store
+*.swp

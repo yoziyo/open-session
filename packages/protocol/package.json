@@ -1,0 +1,61 @@
+{
+  "name": "@open-session/protocol",
+  "version": "0.1.0",
+  "description": "Protocol, encryption, compression, and payload helpers for Open Session replay payloads.",
+  "license": "MIT",
+  "author": "Open Session contributors",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yoziyo/open-session.git",
+    "directory": "packages/protocol"
+  },
+  "bugs": {
+    "url": "https://github.com/yoziyo/open-session/issues"
+  },
+  "homepage": "https://github.com/yoziyo/open-session#readme",
+  "keywords": [
+    "session-replay",
+    "error-reporting",
+    "privacy",
+    "browser-diagnostics"
+  ],
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node ../../scripts/fix-dist-extensions.mjs dist",
+    "test": "vitest run",
+    "prepack": "pnpm run build",
+    "prepublishOnly": "pnpm run build"
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "dependencies": {
+    "brotli-wasm": "3.0.1"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map",
+    "README.md",
+    "README.en.md",
+    "LICENSE"
+  ]
+}

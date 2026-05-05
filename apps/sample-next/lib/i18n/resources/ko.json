@@ -1,0 +1,83 @@
+{
+  "language": {
+    "label": "언어",
+    "ko": "한국어",
+    "en": "English"
+  },
+  "nav": {
+    "aria": "결제 데모 내비게이션",
+    "title": "Open Checkout",
+    "subtitle": "결제 장애 재현 샘플"
+  },
+  "hero": {
+    "eyebrow": "ONLINE COMMERCE PAYMENT REPLAY",
+    "title": "결제 승인 중 장애 재현",
+    "copy": "온라인 주문서에서 결제 승인 API, 콘솔 로그, 민감 정보 마스킹, React Error Boundary 수집 흐름을 한 번에 확인합니다."
+  },
+  "order": {
+    "aria": "주문 상품 요약",
+    "eyebrow": "ORDER SUMMARY",
+    "title": "주문 상품",
+    "subtotal": "상품금액",
+    "discount": "쿠폰할인",
+    "deliveryFee": "배송비",
+    "freeDelivery": "무료",
+    "total": "결제예정금액",
+    "items": {
+      "item1Name": "딸기",
+      "item1Note": "500g · 2팩",
+      "item2Name": "저온살균 우유",
+      "item2Note": "900ml",
+      "item3Name": "치아바타 샌드위치",
+      "item3Note": "간편식 · 2인분"
+    }
+  },
+  "payment": {
+    "aria": "결제 입력 폼",
+    "eyebrow": "PAYMENT CHECKPOINT",
+    "title": "결제 수단 확인",
+    "descriptionLine1": "실제 고객처럼 주문서를 입력하고 결제 승인, 주문 확정 오류를 순서대로 재현하세요.",
+    "descriptionLine2": "결제 비밀번호 같은 민감 정보는 SDK에 값이 저장되면 안 됩니다.",
+    "recipientLabel": "받는 분",
+    "recipientPlaceholder": "이름",
+    "passwordLabel": "결제 비밀번호",
+    "passwordPlaceholder": "6자리 결제 비밀번호",
+    "deliveryNoteLabel": "배송 요청사항",
+    "deliveryNotePlaceholder": "문 앞에 놓아주세요",
+    "couponLabel": "쿠폰 코드",
+    "couponPlaceholder": "첫구매5000",
+    "defaultCoupon": "첫구매5000",
+    "reviewLogButton": "검토 로그",
+    "approveApiButton": "승인 API",
+    "triggerErrorButton": "주문 오류 재현",
+    "passphraseLabel": "뷰어 복호화 키",
+    "statusLabel": "상태"
+  },
+  "status": {
+    "preparing": "주문서 준비 중",
+    "initialized": "초기화됨",
+    "approving": "결제 승인 중",
+    "approved": "승인 완료"
+  },
+  "console": {
+    "initialized": "결제 리플레이 SDK가 초기화되었습니다",
+    "paymentAttempt": "결제시도",
+    "preApprovalWarning": "결제 사전 승인 API 호출: 민감한 쿼리는 리플레이에서 마스킹되어야 합니다",
+    "preApprovalDone": "결제 사전 승인 완료",
+    "reviewedSummary": "고객이 결제 요약을 확인했습니다"
+  },
+  "incident": {
+    "aria": "수집된 인시던트",
+    "eyebrow": "INCIDENT CAPTURED",
+    "title": "결제 승인 후 주문 확정 단계에서 오류가 발생했습니다",
+    "message": "결제 진행중 오류발생",
+    "descriptionBeforeCode": "브라우저 콘솔 또는 아래 payload 알림에서",
+    "descriptionAfterCode": "문자열을 복사한 뒤 뷰어에 붙여넣으면 고객이 결제 직전 어떤 행동을 했는지 확인할 수 있습니다.",
+    "payloadEyebrow": "REPLAY PAYLOAD READY",
+    "payloadReady": "암호화된 리플레이 payload가 준비되었습니다",
+    "payloadAria": "복사할 리플레이 payload",
+    "copyPayload": "payload 복사",
+    "copySuccess": "payload가 복사되었습니다.",
+    "pending": "리플레이 payload를 생성하는 중입니다."
+  }
+}

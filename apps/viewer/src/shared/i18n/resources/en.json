@@ -1,0 +1,166 @@
+{
+  "language": {
+    "label": "Language",
+    "ko": "한국어",
+    "en": "English"
+  },
+  "brand": {
+    "ariaLabel": "Open Session Viewer"
+  },
+  "import": {
+    "descriptionLine1": "Paste an encrypted replay payload captured by open-session.",
+    "descriptionLine2": "After processing finishes, the viewer analyzes and displays the data.",
+    "payloadTitle": "Payload",
+    "payloadEyebrow": "payload",
+    "payloadPlaceholder": "Enter a key that starts with osr1.",
+    "passphraseLabel": "Passphrase",
+    "passphrasePlaceholder": "Enter the key used for decoding.",
+    "decodeButtonIdle": "Open viewer",
+    "decodeButtonLoading": "Decoding…",
+    "decodeFailedEyebrow": "decode failed",
+    "decodeFailedMessage": "The payload cannot be opened. Check that the passphrase is correct and the payload was copied completely.",
+    "sampleButton": "View sample"
+  },
+  "viewer": {
+    "sessionBadge": "session {{sessionId}}",
+    "importAnother": "Import another",
+    "statusError": "error",
+    "statusNormal": "normal",
+    "sdkBadge": "sdk {{version}}",
+    "summaryEyebrow": "Error summary",
+    "loadedTitle": "Replay session loaded",
+    "unknownPage": "Unknown page",
+    "windowLabel": "Window",
+    "capturedMs": "{{duration}}ms captured",
+    "mainError": "main error",
+    "defaultErrorName": "Error",
+    "metrics": {
+      "errorsLabel": "Errors",
+      "errorsDetail": "runtime errors",
+      "networkLabel": "Network issues",
+      "networkDetail": "failed responses",
+      "consoleLabel": "Console issues",
+      "consoleDetail": "warn/error logs",
+      "capturedLabel": "Captured events",
+      "capturedDetail": "captured signals",
+      "droppedLabel": "Dropped events",
+      "droppedDetail": "buffer/truncate"
+    }
+  },
+  "tabs": {
+    "timeline": "Events",
+    "network": "Network",
+    "console": "Console",
+    "privacy": "Privacy",
+    "metadata": "Payload Info"
+  },
+  "timeline": {
+    "streamTitle": "Event stream",
+    "filterAll": "all {{count}}",
+    "filterUser": "user {{count}}",
+    "filterNetwork": "network {{count}}",
+    "filterNavigation": "navigation {{count}}",
+    "filterConsole": "console {{count}}",
+    "filterErrors": "errors {{count}}",
+    "emptyForFilter": "No events for this filter.",
+    "noEventsCaptured": "No timeline events captured.",
+    "panelTitle": "Failure sequence",
+    "panelEyebrow": "failure sequence",
+    "ariaLabel": "Key event flow before the failure",
+    "pointAriaLabel": "Event {{index}} {{kind}}: {{title}}",
+    "failureBadge": "failure",
+    "rawJson": "Raw JSON",
+    "selectedJson": "Selected event JSON",
+    "redacted": "redacted",
+    "repeatBadge": "×{{count}}",
+    "spanBadge": "{{duration}} span"
+  },
+  "network": {
+    "empty": "No network data captured.",
+    "panelTitle": "Network",
+    "panelEyebrow": "network status",
+    "summary": "{{count}} requests · execution window {{window}} · average duration {{average}} · failures/warnings {{failed}}",
+    "durationRange": "{{duration}} ({{min}}–{{max}})",
+    "recentBadge": "Latest {{count}}",
+    "headers": {
+      "requested": "Requested",
+      "completed": "Completed",
+      "method": "Method",
+      "url": "URL",
+      "status": "Status",
+      "duration": "Duration",
+      "offset": "Offset"
+    }
+  },
+  "console": {
+    "empty": "No console logs captured.",
+    "panelTitle": "Console",
+    "panelEyebrow": "console",
+    "summary": "{{count}} logs · warn/error {{problemCount}}",
+    "recentBadge": "Latest {{count}}",
+    "headers": {
+      "time": "Time",
+      "level": "Level",
+      "message": "Message",
+      "offset": "Offset"
+    },
+    "noArguments": "No arguments",
+    "jsonSummary": "Console JSON"
+  },
+  "privacy": {
+    "panelTitle": "Privacy protection status",
+    "panelEyebrow": "payload safety",
+    "passwordTitle": "Passwords and sensitive inputs",
+    "passwordValue": "{{count}} times",
+    "passwordMode": "Not collected",
+    "passwordDetail": "Actual key values are not stored; only masked events showing that input occurred are retained.",
+    "networkTitle": "Network headers and bodies",
+    "networkValue": "{{count}} requests",
+    "networkMode": "Not collected by default",
+    "networkDetail": "Request/response bodies and headers such as Authorization and Cookie are not included in the payload.",
+    "queryTitle": "Sensitive URL queries",
+    "queryValue": "{{count}} items",
+    "queryMode": "Masked before storage",
+    "queryDetail": "Query values such as token, email, and session are replaced with [redacted] while preserving URL flow.",
+    "domTitle": "Masked DOM targets",
+    "domValue": "{{count}} items",
+    "domMode": "Selector protected",
+    "domDetail": "password and data-replay-mask areas are recorded as data-redacted selectors instead of real id/class values.",
+    "consoleTitle": "Console sensitive values",
+    "consoleValue": "{{count}} items",
+    "consoleMode": "Values replaced",
+    "consoleDetail": "Values for password, token, and secret-like fields in console arguments are replaced with [redacted].",
+    "policyLabel": "Applied policy",
+    "processedLabel": "Payload processing count",
+    "processedValue": "Protected {{count}} sensitive signals before collection or serialization."
+  },
+  "metadata": {
+    "panelTitle": "Payload information",
+    "panelEyebrow": "Payload Information",
+    "copyIdle": "Copy",
+    "copyDone": "Copied",
+    "jsonSummary": "decode JSON",
+    "copyFailed": "Copy failed"
+  },
+  "events": {
+    "unknownPage": "Unknown page",
+    "capturedError": "Captured error",
+    "userClick": "User click",
+    "keyboardInput": "Keyboard input",
+    "sdkLifecycle": "SDK {{name}}",
+    "payloadTruncated": "Payload truncated: {{reason}}",
+    "replayEvent": "Replay event",
+    "consoleTitle": "{{level}} console",
+    "navigationTitle": "{{type}} to {{to}}",
+    "errorFallback": "Error",
+    "noArguments": "No arguments"
+  },
+  "decode": {
+    "emptyPayload": "Paste an osr1 payload before decoding.",
+    "invalidPrefix": "Invalid payload prefix. Expected a value starting with osr1:.",
+    "passphraseRequired": "Passphrase is required to decrypt payloads.",
+    "unableToDecrypt": "Unable to decrypt payload.",
+    "decryptFailed": "Unable to decrypt payload. Check the passphrase and ensure the payload was copied completely.",
+    "malformedPayload": "Malformed replay payload: {{message}}"
+  }
+}
