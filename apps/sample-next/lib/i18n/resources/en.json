@@ -1,0 +1,83 @@
+{
+  "language": {
+    "label": "Language",
+    "ko": "한국어",
+    "en": "English"
+  },
+  "nav": {
+    "aria": "Payment demo navigation",
+    "title": "Open Checkout",
+    "subtitle": "Payment failure replay sample"
+  },
+  "hero": {
+    "eyebrow": "ONLINE COMMERCE PAYMENT REPLAY",
+    "title": "Replay a payment approval failure",
+    "copy": "Review a checkout flow that captures payment approval API calls, console logs, sensitive-data masking, and React Error Boundary failures."
+  },
+  "order": {
+    "aria": "Order summary",
+    "eyebrow": "ORDER SUMMARY",
+    "title": "Order items",
+    "subtotal": "Subtotal",
+    "discount": "Coupon discount",
+    "deliveryFee": "Delivery fee",
+    "freeDelivery": "Free",
+    "total": "Total due",
+    "items": {
+      "item1Name": "Strawberries",
+      "item1Note": "500g · 2 packs",
+      "item2Name": "Pasteurized milk",
+      "item2Note": "900ml",
+      "item3Name": "Ciabatta sandwich",
+      "item3Note": "Ready meal · serves 2"
+    }
+  },
+  "payment": {
+    "aria": "Payment input form",
+    "eyebrow": "PAYMENT CHECKPOINT",
+    "title": "Confirm payment method",
+    "descriptionLine1": "Enter the checkout details like a real customer, then reproduce approval and order-confirmation failures in order.",
+    "descriptionLine2": "Sensitive data such as payment passwords must never be stored by the SDK.",
+    "recipientLabel": "Recipient",
+    "recipientPlaceholder": "Name",
+    "passwordLabel": "Payment password",
+    "passwordPlaceholder": "6-digit payment password",
+    "deliveryNoteLabel": "Delivery note",
+    "deliveryNotePlaceholder": "Leave it at the door",
+    "couponLabel": "Coupon code",
+    "couponPlaceholder": "WELCOME5000",
+    "defaultCoupon": "WELCOME5000",
+    "reviewLogButton": "Review log",
+    "approveApiButton": "Approval API",
+    "triggerErrorButton": "Trigger order error",
+    "passphraseLabel": "Viewer passphrase",
+    "statusLabel": "Status"
+  },
+  "status": {
+    "preparing": "Preparing checkout",
+    "initialized": "Initialized",
+    "approving": "Approving payment",
+    "approved": "Approved"
+  },
+  "console": {
+    "initialized": "Payment replay SDK initialized",
+    "paymentAttempt": "Payment attempted",
+    "preApprovalWarning": "Payment pre-approval API call: sensitive query values must be masked in the replay",
+    "preApprovalDone": "Payment pre-approval completed",
+    "reviewedSummary": "Customer reviewed the payment summary"
+  },
+  "incident": {
+    "aria": "Captured incident",
+    "eyebrow": "INCIDENT CAPTURED",
+    "title": "An error occurred after payment approval during order confirmation",
+    "message": "Payment failed during checkout",
+    "descriptionBeforeCode": "Copy the",
+    "descriptionAfterCode": "string from the browser console or payload alert below, then paste it into the viewer to inspect what the customer did right before payment.",
+    "payloadEyebrow": "REPLAY PAYLOAD READY",
+    "payloadReady": "Encrypted replay payload is ready",
+    "payloadAria": "Replay payload to copy",
+    "copyPayload": "Copy payload",
+    "copySuccess": "Payload copied.",
+    "pending": "Generating replay payload."
+  }
+}

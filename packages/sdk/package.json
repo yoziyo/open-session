@@ -1,0 +1,69 @@
+{
+  "name": "@open-session/sdk",
+  "version": "0.1.0",
+  "description": "Browser SDK for capturing privacy-safe Open Session replay context and emitting encrypted payloads.",
+  "license": "MIT",
+  "author": "Open Session contributors",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yoziyo/open-session.git",
+    "directory": "packages/sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/yoziyo/open-session/issues"
+  },
+  "homepage": "https://github.com/yoziyo/open-session#readme",
+  "keywords": [
+    "session-replay",
+    "error-reporting",
+    "privacy",
+    "browser-sdk"
+  ],
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./flush-worker": {
+      "types": "./src/flush-worker.ts",
+      "default": "./src/flush-worker.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node ../../scripts/fix-dist-extensions.mjs dist",
+    "test": "vitest run",
+    "prepack": "pnpm run build",
+    "prepublishOnly": "pnpm run build"
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./flush-worker": {
+        "types": "./dist/flush-worker.d.ts",
+        "default": "./dist/flush-worker.js"
+      }
+    }
+  },
+  "dependencies": {
+    "@open-session/protocol": "workspace:*"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map",
+    "README.md",
+    "README.en.md",
+    "LICENSE"
+  ]
+}

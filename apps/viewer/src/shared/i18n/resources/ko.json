@@ -1,0 +1,166 @@
+{
+  "language": {
+    "label": "언어",
+    "ko": "한국어",
+    "en": "English"
+  },
+  "brand": {
+    "ariaLabel": "Open Session Viewer"
+  },
+  "import": {
+    "descriptionLine1": "open-session 에서 측정된 암호화된 리플레이 payload를 붙여넣으세요.",
+    "descriptionLine2": "처리가 완료되면 데이터를 분석해 보여줍니다.",
+    "payloadTitle": "Payload",
+    "payloadEyebrow": "payload",
+    "payloadPlaceholder": "osr1로 시작하는 key를 입력해 주세요.",
+    "passphraseLabel": "Passphrase",
+    "passphrasePlaceholder": "decode를 위한 키를 입력해 주세요.",
+    "decodeButtonIdle": "Open viewer",
+    "decodeButtonLoading": "Decoding…",
+    "decodeFailedEyebrow": "decode failed",
+    "decodeFailedMessage": "Payload를 열 수 없습니다. Passphrase가 맞는지, payload가 끝까지 복사됐는지 확인해 주세요.",
+    "sampleButton": "샘플 보기"
+  },
+  "viewer": {
+    "sessionBadge": "session {{sessionId}}",
+    "importAnother": "Import another",
+    "statusError": "error",
+    "statusNormal": "normal",
+    "sdkBadge": "sdk {{version}}",
+    "summaryEyebrow": "Error summary",
+    "loadedTitle": "리플레이 세션을 불러왔습니다",
+    "unknownPage": "알 수 없는 페이지",
+    "windowLabel": "수집 구간",
+    "capturedMs": "{{duration}}ms 수집",
+    "mainError": "주요 오류",
+    "defaultErrorName": "Error",
+    "metrics": {
+      "errorsLabel": "오류",
+      "errorsDetail": "실행 중 오류",
+      "networkLabel": "네트워크 문제",
+      "networkDetail": "실패 응답",
+      "consoleLabel": "콘솔 이슈",
+      "consoleDetail": "warn/error 로그",
+      "capturedLabel": "수집 이벤트",
+      "capturedDetail": "수집된 신호",
+      "droppedLabel": "누락 이벤트",
+      "droppedDetail": "버퍼/절단"
+    }
+  },
+  "tabs": {
+    "timeline": "Events",
+    "network": "Network",
+    "console": "Console",
+    "privacy": "Privacy",
+    "metadata": "Payload Info"
+  },
+  "timeline": {
+    "streamTitle": "이벤트 스트림",
+    "filterAll": "all {{count}}",
+    "filterUser": "user {{count}}",
+    "filterNetwork": "network {{count}}",
+    "filterNavigation": "navigation {{count}}",
+    "filterConsole": "console {{count}}",
+    "filterErrors": "errors {{count}}",
+    "emptyForFilter": "No events for this filter.",
+    "noEventsCaptured": "No timeline events captured.",
+    "panelTitle": "오류 발생 흐름",
+    "panelEyebrow": "failure sequence",
+    "ariaLabel": "오류 발생 전 주요 이벤트 흐름",
+    "pointAriaLabel": "{{index}}번째 이벤트 {{kind}}: {{title}}",
+    "failureBadge": "failure",
+    "rawJson": "Raw JSON",
+    "selectedJson": "Selected event JSON",
+    "redacted": "redacted",
+    "repeatBadge": "×{{count}}",
+    "spanBadge": "{{duration}} 구간"
+  },
+  "network": {
+    "empty": "No network data captured.",
+    "panelTitle": "네트워크",
+    "panelEyebrow": "network status",
+    "summary": "총 {{count}}개 요청 · 실행 시간 {{window}} · 평균 소요 {{average}} · 실패/경고 {{failed}}개",
+    "durationRange": "{{duration}} ({{min}}–{{max}})",
+    "recentBadge": "최근 {{count}}개",
+    "headers": {
+      "requested": "Requested",
+      "completed": "Completed",
+      "method": "Method",
+      "url": "URL",
+      "status": "Status",
+      "duration": "Duration",
+      "offset": "Offset"
+    }
+  },
+  "console": {
+    "empty": "No console logs captured.",
+    "panelTitle": "콘솔",
+    "panelEyebrow": "console",
+    "summary": "총 {{count}}개 로그 · warn/error {{problemCount}}개",
+    "recentBadge": "최근 {{count}}개",
+    "headers": {
+      "time": "Time",
+      "level": "Level",
+      "message": "Message",
+      "offset": "Offset"
+    },
+    "noArguments": "No arguments",
+    "jsonSummary": "Console JSON"
+  },
+  "privacy": {
+    "panelTitle": "개인정보 보호 상태",
+    "panelEyebrow": "payload safety",
+    "passwordTitle": "비밀번호·민감 입력값",
+    "passwordValue": "{{count}}회",
+    "passwordMode": "수집 안함",
+    "passwordDetail": "실제 키 값은 저장하지 않고, 입력이 있었다는 masked 이벤트만 남깁니다.",
+    "networkTitle": "네트워크 헤더·본문",
+    "networkValue": "{{count}}개 요청",
+    "networkMode": "기본 미수집",
+    "networkDetail": "요청/응답 body, Authorization, Cookie 같은 헤더 값은 payload에 넣지 않습니다.",
+    "queryTitle": "민감 URL 쿼리",
+    "queryValue": "{{count}}건",
+    "queryMode": "마스킹 후 저장",
+    "queryDetail": "token, email, session 같은 쿼리 값은 [redacted]로 대체해 URL 흐름만 남깁니다.",
+    "domTitle": "마스킹된 DOM 대상",
+    "domValue": "{{count}}건",
+    "domMode": "선택자 보호",
+    "domDetail": "password, data-replay-mask 영역은 실제 id/class 대신 data-redacted 선택자로 기록합니다.",
+    "consoleTitle": "콘솔 민감 값",
+    "consoleValue": "{{count}}건",
+    "consoleMode": "값 대체",
+    "consoleDetail": "콘솔 인자 안의 password, token, secret 계열 필드 값은 [redacted]로 대체합니다.",
+    "policyLabel": "적용 정책",
+    "processedLabel": "payload 처리 수",
+    "processedValue": "총 {{count}}개의 민감 신호를 수집 전 또는 직렬화 전에 보호했습니다."
+  },
+  "metadata": {
+    "panelTitle": "페이로드 정보",
+    "panelEyebrow": "Payload Information",
+    "copyIdle": "복사",
+    "copyDone": "복사 완료",
+    "jsonSummary": "decode JSON",
+    "copyFailed": "복사 실패"
+  },
+  "events": {
+    "unknownPage": "Unknown page",
+    "capturedError": "Captured error",
+    "userClick": "User click",
+    "keyboardInput": "Keyboard input",
+    "sdkLifecycle": "SDK {{name}}",
+    "payloadTruncated": "Payload truncated: {{reason}}",
+    "replayEvent": "Replay event",
+    "consoleTitle": "{{level}} console",
+    "navigationTitle": "{{type}} → {{to}}",
+    "errorFallback": "Error",
+    "noArguments": "No arguments"
+  },
+  "decode": {
+    "emptyPayload": "디코딩하기 전에 osr1 payload를 붙여넣어 주세요.",
+    "invalidPrefix": "Payload prefix가 올바르지 않습니다. osr1:로 시작하는 값을 입력해 주세요.",
+    "passphraseRequired": "Payload를 복호화하려면 Passphrase가 필요합니다.",
+    "unableToDecrypt": "Payload를 복호화할 수 없습니다.",
+    "decryptFailed": "Payload를 복호화할 수 없습니다. Passphrase가 맞는지, payload가 끝까지 복사됐는지 확인해 주세요.",
+    "malformedPayload": "잘못된 replay payload: {{message}}"
+  }
+}
