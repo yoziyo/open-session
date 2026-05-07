@@ -2,13 +2,10 @@
 
 Korean: [`usage-guide.md`](./usage-guide.md)
 
-Open Session captures a short browser history before an error and turns it into
-an encrypted `osr1:` payload. It records user actions, route changes, network calls, console
-logs, and errors so you can inspect what happened without running a hosted replay
-service.
+Open Session captures a short window of browser context before an error and turns it into an encrypted `osr1:` payload. In one place, you can inspect what the user clicked, which network request failed, which console logs were written, and which error occurred.
 
-The SDK does not provide a server. It collects, compresses, encrypts, and calls
-your `transport` callback. Your app decides where that payload goes.
+The SDK does not provide a server. It collects data, compresses it, encrypts it, and calls
+your `transport` callback. Your app decides where the payload goes.
 
 ## Install
 
@@ -39,12 +36,11 @@ initOpenSession({
 });
 ```
 
-`passphrase` is required because payloads are encrypted by default. Encryption uses Web Crypto first, then a JS fallback when `crypto.subtle` is unavailable, such as on hosts-based HTTP development domains. `crypto.getRandomValues` is still required for salt/iv generation.
+`passphrase` is required. Open Session payloads are encrypted by default. Encryption uses Web Crypto first, then a JS fallback when `crypto.subtle` is unavailable, such as on HTTP development domains mapped through the hosts file. `crypto.getRandomValues` is still required for salt/iv generation.
 
 ## Recommended starting setup
 
-Start with this shape, then tune it after you have seen a few real payloads from
-your app.
+Start with this setup. After checking a few real payloads, tune `maxEvents`, `maxApproxBytes`, and redaction options.
 
 ```ts
 import { initOpenSession } from "@open-session/sdk";
@@ -211,18 +207,18 @@ From that server route, you can forward payloads to Slack webhooks, OpenSearch, 
 | `appId` | app name | Label shown in the viewer |
 | `passphrase` | managed by your app | Key for payload encryption/decryption |
 | `transport` | console or server API | Callback that receives the payload |
-| `sampleRate` | `1` | Session-level sampling. `0` drops all sessions and `1` keeps all sessions. |
+| `sampleRate` | `1` | Session-level sampling. `0` drops everything and `1` keeps everything. |
 | `maxEvents` | `200` | Maximum retained events. SDK default is `250`. |
 | `maxApproxBytes` | `500_000` | Pre-compression buffer budget. SDK default is `750_000`. |
 | `additionalQueryKeys` | app-specific | Extra query keys to redact |
 | `maskSelectors` | `[data-replay-mask]` | Keep the event but mask its DOM target |
 | `excludeSelectors` | `[data-replay-exclude]` | Drop events from matching DOM areas |
 | `excludeUrls` | app-specific | Drop matching network events |
-| `networkStatusFilter` | failed APIs only | Keep/drop redacted network events by status |
+| `networkStatusFilter` | failed APIs only | Keep or drop redacted network events by status |
 | `excludeConsole` | app-specific | Drop matching console messages |
 | `consoleLevels` | `["warn", "error"]` | Limit console capture to the levels you need |
-| `capture.*` | all `true` | Toggle event categories with the capture-scope options below. |
-| `beforeSend` | app policy | Modify or drop the session immediately before encryption/transport |
+| `capture.*` | all `true` | Toggle event categories with capture-scope options |
+| `beforeSend` | app policy | Modify or discard the session immediately before encryption/transport |
 
 ### Capture-scope options
 
@@ -252,11 +248,11 @@ initOpenSession({
 });
 ```
 
-`sampleRate` is decided once at init time for the whole session. A sampled-out session keeps no automatic events, manual `addEvent()` calls, `captureError()` calls, or flush payloads.
+`sampleRate` is decided once at init time for the whole session. A session excluded by sampling keeps no automatic events, manual `addEvent()` calls, `captureError()` calls, or flush payloads.
 
 ### Final pre-transport filter
 
-`beforeSend(session)` runs immediately before encryption and `transport`. The returned session is encoded into the payload; returning `null`/`undefined` skips payload creation for that flush. Use it to remove sensitive metadata one last time or to drop flushes that do not contain failure signals.
+`beforeSend(session)` runs immediately before encryption and `transport`. The returned session is encoded into the payload; returning `null`/`undefined` skips payload creation for that flush. Use it to remove sensitive metadata one last time or to drop flushes without failure signals.
 
 ```ts
 initOpenSession({
@@ -287,9 +283,9 @@ These options do not expand collection. They reduce or truncate what is kept in 
 | `excludeConsole` | none | Drop console events matching a string or regular expression. |
 | `maxSanitizedStringLength` | `500` | Truncate console/error strings after this length. |
 
-Detailed limits such as console argument count, object key count, and stack length are managed by SDK internal defaults. For production, prefer “collect less and truncate safely.” For checkout, auth, healthcare, or admin surfaces, start with `excludeSelectors`, `excludeUrls`, and `excludeConsole`, then enable only the categories the team needs.
+Detailed limits such as console argument count, object key count, and stack length are managed by SDK internal defaults. In production, use "collect less and truncate safely" as the default. For checkout, auth, healthcare, or admin surfaces, start with `excludeSelectors`, `excludeUrls`, and `excludeConsole`, then enable only the categories the team needs.
 
-## Open in the viewer
+## Open in the Viewer
 
 1. Start the viewer.
 
@@ -330,7 +326,7 @@ console.log(decoded.session.errors);
 - Add your own `additionalQueryKeys`, `maskSelectors`, and `excludeSelectors`.
 - Tune `maxEvents`, `maxApproxBytes`, and `compressionLevel` after checking real payloads.
 - Call `captureError()` and `flushOpenSession()` from your error path.
-- Decode a real payload in the viewer before you ship.
+- Decode a real payload in the Viewer before you ship.
 - If you use `processing: "auto"`, test worker and CSP behavior in target browsers.
 
 ## Related docs

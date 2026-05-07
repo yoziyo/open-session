@@ -1,4 +1,4 @@
-# SDK Performance Budget
+# SDK performance budget
 
 Korean: [`performance-budget.md`](./performance-budget.md)
 
@@ -12,7 +12,7 @@ encodes the payload during `flush()`.
 pnpm bench:payload
 ```
 
-The benchmark generates synthetic replay sessions and prints:
+The benchmark generates synthetic replay sessions and prints these values:
 
 - event count
 - compact JSON bytes before compression
@@ -22,19 +22,14 @@ The benchmark generates synthetic replay sessions and prints:
 - encode time in milliseconds
 - approximate Node heap delta
 
-The script is intentionally local. It uses the same protocol
+This script is for local measurement. It uses the same protocol
 compaction/compression code and Web Crypto primitives as the SDK path, but it is
-not a browser profiler. Browser main-thread stall and worker transfer overhead
-should still be checked with Chrome DevTools before release.
+not a browser profiler. Before release, check browser main-thread stall and worker transfer overhead
+with Chrome DevTools.
 
 The benchmark exits non-zero if any gated stress fixture exceeds `20,000`
 compressed body bytes at the default level `6`. The currently gated fixtures are
-`stress-repetitive-uncoalesced` and `stress-high-entropy`. That threshold is a
-synthetic stress regression target, not a runtime cap for normal users. Apps can
-intentionally choose larger `maxEvents`/`maxApproxBytes` budgets when their
-transport can carry bigger payloads. The larger
-`high-entropy-reference` fixture is tracked separately as an unbounded
-reference baseline.
+`stress-repetitive-uncoalesced` and `stress-high-entropy`. That threshold is a synthetic stress regression target, not a runtime cap for normal users. Apps with transport that can handle larger payloads may choose larger `maxEvents`/`maxApproxBytes` budgets. The larger `high-entropy-reference` fixture is tracked separately as an unbounded reference baseline.
 
 ## Current benchmark snapshot
 
@@ -53,8 +48,8 @@ template/series Brotli encoding:
 
 ## Buffer retention policy
 
-When `maxEvents` or `maxApproxBytes` is exceeded, the SDK no longer drops events
-by plain FIFO. It drops lower-value events first so the payload keeps the context
+When `maxEvents` or `maxApproxBytes` is exceeded, the SDK does not drop events
+with plain FIFO. It drops lower-value events first so the payload keeps the context
 most useful for incident diagnosis:
 
 1. errors / captured exceptions
@@ -63,26 +58,18 @@ most useful for incident diagnosis:
 4. user interactions such as click and keydown
 5. successful network, low-level console, lifecycle, and truncate/noise events
 
-If every remaining event has similar priority, the older event is dropped first.
-The configured budgets still apply. This policy keeps the most useful captured
-data without making the buffer unbounded.
+If the remaining events have similar priority, the older event is dropped first. The configured budgets still apply. This policy keeps useful captured data longer without making the buffer unbounded.
 
 ## Runtime stability notes
 
 `maxApproxBytes` is an in-memory, pre-compression guardrail. It is intentionally
 approximate; do not treat it as the final `osr1:` payload size. The buffer keeps
-lightweight size accounting next to each retained event so budget enforcement
-does not repeatedly stringify every event while dropping low-value entries.
+lightweight size accounting next to each retained event, so budget enforcement
+does not stringify every event each time it drops a low-value entry.
 
-Flush keeps redacted event `pageUrl` values instead of cloning every event to
-remove repeated URLs. This keeps a small amount of pre-compression data to avoid
-extra flush-time object churn; repeated URLs are still compacted through the
-string dictionary and Brotli.
+Flush does not clone every event to remove repeated URLs. It keeps redacted event `pageUrl` values instead. This leaves a little pre-compression data but reduces flush-time object churn. Repeated URLs are still compacted through the string dictionary and Brotli.
 
-Manual `addReplayEvent()` callers can still pass unusual objects in console-like
-payloads. If an event cannot be serialized safely, the SDK records a bounded
-truncate marker instead of throwing through the host app or retaining an
-unencodable object graph. Built-in console capture also handles circular objects
+Manual `addReplayEvent()` callers can pass unexpected objects in console-like payloads. If an event cannot be serialized safely, the SDK does not throw through the host app or retain an unencodable object graph. It records a bounded truncate marker instead. Built-in console capture also handles circular objects
 with bounded-depth sanitization.
 
 Flush processing has two memory/CPU profiles:
@@ -91,8 +78,7 @@ Flush processing has two memory/CPU profiles:
   `flush()`.
 - `auto`/`worker`: moves compact/compress/encrypt work to a caller-provided
   worker when possible. This can reduce UI blocking, but structured-cloning the
-  session into the worker briefly duplicates the replay data in memory. Prefer it
-  for larger buffers after validating bundler and CSP behavior.
+  session into the worker briefly duplicates replay data in memory. Prefer it for larger buffers after validating bundler and CSP behavior.
 
 ## Recommended budgets
 
@@ -149,11 +135,11 @@ initOpenSession({
 ```
 
 Use `processing: "worker"` only after validating the app bundler and CSP policy.
-`processing: "auto"` is safer because it falls back to main-thread encoding.
+`processing: "auto"` is safer because it falls back to main-thread encoding if the worker path fails.
 
 ## Release gate proposal
 
-Before changing SDK defaults, run:
+Before changing SDK defaults, run these commands:
 
 ```bash
 pnpm bench:payload
@@ -171,4 +157,4 @@ Treat these as warning thresholds for the default profile:
   fixtures on a normal laptop
 - heap delta > 5 MB for normal/default sessions, or >20 MB for stress fixtures
   in the Node benchmark
-- observable browser main-thread stall during manual flush
+- browser main-thread stall observed during manual flush

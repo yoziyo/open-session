@@ -2,15 +2,15 @@
 
 English: [`performance-budget.en.md`](./performance-budget.en.md)
 
-SDK 기본값과 app별 override를 정할 때 보는 문서입니다. SDK는 event를 main thread에서 수집하고, `flush()` 시점에 compact, compress, encrypt, encode를 실행합니다.
+SDK 기본값과 app별 override를 정할 때 참고하는 문서입니다. SDK는 event를 main thread에서 수집하고, `flush()` 시점에 compact, compress, encrypt, encode를 실행합니다.
 
-## Benchmark command
+## Benchmark 실행
 
 ```bash
 pnpm bench:payload
 ```
 
-Benchmark는 synthetic replay session을 만들고 아래 값을 출력합니다.
+Benchmark는 synthetic replay session을 만든 뒤 다음 값을 출력합니다.
 
 - event count
 - 압축 전 compact JSON bytes
@@ -20,11 +20,11 @@ Benchmark는 synthetic replay session을 만들고 아래 값을 출력합니다
 - encode time in milliseconds
 - approximate Node heap delta
 
-이 script는 local 측정용입니다. SDK 경로와 같은 protocol compaction/compression code와 Web Crypto primitive를 쓰지만 browser profiler는 아닙니다. Release 전에는 Chrome DevTools로 browser main-thread stall과 worker transfer overhead를 따로 확인해야 합니다.
+이 script는 로컬 측정용입니다. SDK 경로와 같은 protocol compaction/compression code와 Web Crypto primitive를 쓰지만 browser profiler는 아닙니다. 릴리즈 전에는 Chrome DevTools로 browser main-thread stall과 worker transfer overhead를 따로 확인해야 합니다.
 
-기본 level `6`에서 gated stress fixture가 `20,000` compressed body bytes를 넘으면 benchmark는 non-zero로 종료합니다. 현재 gated fixture는 `stress-repetitive-uncoalesced`와 `stress-high-entropy`입니다. 이 threshold는 synthetic stress regression target이며 일반 사용자 runtime cap이 아닙니다. App은 transport가 더 큰 payload를 감당할 수 있다면 더 큰 `maxEvents`/`maxApproxBytes` budget을 선택할 수 있습니다. 더 큰 `high-entropy-reference` fixture는 unbounded reference baseline으로 별도 추적합니다.
+기본 level `6`에서 gated stress fixture가 `20,000` compressed body bytes를 넘으면 benchmark는 non-zero로 종료합니다. 현재 gated fixture는 `stress-repetitive-uncoalesced`와 `stress-high-entropy`입니다. 이 threshold는 synthetic stress regression target이지 일반 사용자 runtime cap이 아닙니다. transport가 더 큰 payload를 감당할 수 있는 앱은 더 큰 `maxEvents`/`maxApproxBytes` budget을 선택해도 됩니다. 더 큰 `high-entropy-reference` fixture는 unbounded reference baseline으로 따로 추적합니다.
 
-## 현재 benchmark snapshot
+## 현재 benchmark 기준값
 
 compact-session-v1 revision 1 template/series Brotli encoding 이후 2026-05-01 local 대표 실행 결과:
 
@@ -38,9 +38,9 @@ compact-session-v1 revision 1 template/series Brotli encoding 이후 2026-05-01 
 | stress-high-entropy | 2,110 | 2,110 | 6 | 104,695 B | 11,702 B | 16,015 | ~188 ms | ~12.0 |
 | high-entropy-reference | 2,110 | 2,110 | 6 | 104,698 B | 11,699 B | 16,015 | ~218 ms | ~0.8 |
 
-## Buffer retention policy
+## Buffer 보존 정책
 
-`maxEvents` 또는 `maxApproxBytes`를 넘으면 SDK는 plain FIFO로만 버리지 않습니다. Incident diagnosis에 더 필요한 context가 남도록 낮은 가치 event를 먼저 버립니다.
+`maxEvents` 또는 `maxApproxBytes`를 넘으면 SDK는 단순 FIFO로만 버리지 않습니다. 사고 분석에 더 필요한 context가 남도록 낮은 가치 event를 먼저 버립니다.
 
 1. errors / captured exceptions
 2. failed 또는 errored network requests
@@ -48,20 +48,20 @@ compact-session-v1 revision 1 template/series Brotli encoding 이후 2026-05-01 
 4. click, keydown 같은 user interactions
 5. successful network, low-level console, lifecycle, truncate/noise events
 
-남은 event의 priority가 비슷하면 더 오래된 event를 먼저 버립니다. 설정된 budget은 계속 적용됩니다. 이 정책은 buffer를 무한정 키우지 않으면서 유용한 수집 데이터를 더 오래 남깁니다.
+남은 event의 priority가 비슷하면 더 오래된 event를 먼저 버립니다. 설정된 budget은 계속 적용됩니다. 이 정책은 buffer를 무한정 키우지 않으면서 유용한 수집 데이터를 더 오래 남기기 위한 장치입니다.
 
-## Runtime stability notes
+## Runtime 안정성 메모
 
-`maxApproxBytes`는 memory 안에서 쓰는 압축 전 guardrail입니다. 의도적으로 approximate 값이며 최종 `osr1:` payload size로 보면 안 됩니다. Buffer는 retained event 옆에 가벼운 size accounting을 저장하므로 낮은 가치 event를 drop할 때 매번 모든 event를 stringify하지 않습니다.
+`maxApproxBytes`는 memory 안에서 쓰는 압축 전 guardrail입니다. 의도적으로 approximate 값이며 최종 `osr1:` payload size로 보면 안 됩니다. Buffer는 retained event 옆에 가벼운 size accounting을 저장하므로 낮은 가치 event를 drop할 때마다 모든 event를 stringify하지 않습니다.
 
-Flush는 반복 URL 제거를 위해 모든 event를 clone하지 않고 redaction된 event `pageUrl` 값을 유지합니다. 약간의 압축 전 data를 남기는 대신 flush-time object churn을 줄입니다. 반복 URL은 string dictionary와 Brotli를 통해 계속 compact됩니다.
+Flush는 반복 URL을 제거하려고 모든 event를 clone하지 않습니다. 대신 redaction된 event `pageUrl` 값을 유지합니다. 압축 전 data가 조금 남지만 flush-time object churn은 줄어듭니다. 반복 URL은 string dictionary와 Brotli를 통해 계속 compact됩니다.
 
-Manual `addReplayEvent()` 호출자는 console-like payload에 특이한 object를 넣을 수 있습니다. Event를 안전하게 serialize할 수 없으면 SDK는 host app으로 throw하거나 인코딩 불가능한 object graph를 들고 있지 않고 bounded truncate marker를 기록합니다. Built-in console capture도 bounded-depth sanitization으로 circular object를 처리합니다.
+Manual `addReplayEvent()` 호출자는 console-like payload에 예상 밖 object를 넣을 수 있습니다. Event를 안전하게 serialize할 수 없으면 SDK는 host app까지 throw하지 않고, 인코딩 불가능한 object graph를 붙잡아 두지도 않습니다. 대신 bounded truncate marker를 기록합니다. Built-in console capture도 bounded-depth sanitization으로 circular object를 처리합니다.
 
 Flush processing에는 두 가지 memory/CPU profile이 있습니다.
 
 - `main-thread`: 가장 단순하고 호환성이 좋습니다. compression/encryption이 `flush()` 중 실행됩니다.
-- `auto`/`worker`: 가능하면 caller-provided worker로 compact/compress/encrypt 작업을 옮깁니다. UI blocking을 줄일 수 있지만, session을 worker로 structured-clone하는 동안 replay data가 일시적으로 memory에 중복됩니다. 큰 buffer에서 bundler와 CSP 동작을 확인한 뒤 쓰는 편이 좋습니다.
+- `auto`/`worker`: 가능하면 caller-provided worker로 compact/compress/encrypt 작업을 옮깁니다. UI blocking을 줄일 수 있지만, session을 worker로 structured-clone하는 동안 replay data가 일시적으로 memory에 중복됩니다. 큰 buffer에서는 bundler와 CSP 동작을 확인한 뒤 쓰는 편이 좋습니다.
 
 ## 추천 budget
 
@@ -117,11 +117,11 @@ initOpenSession({
 });
 ```
 
-`processing: "worker"`는 app bundler와 CSP policy를 검증한 뒤에만 사용합니다. `processing: "auto"`는 실패 시 main-thread encoding으로 돌아가므로 더 안전합니다.
+`processing: "worker"`는 app bundler와 CSP policy를 검증한 뒤에만 사용합니다. `processing: "auto"`는 실패하면 main-thread encoding으로 돌아가므로 더 안전합니다.
 
-## Release gate proposal
+## 릴리즈 gate 제안
 
-SDK 기본값을 바꾸기 전에는 아래를 실행합니다.
+SDK 기본값을 바꾸기 전에는 다음 명령을 실행합니다.
 
 ```bash
 pnpm bench:payload
@@ -137,4 +137,4 @@ Default profile 기준 warning threshold:
 - 대표 250-event session의 final envelope > 100 KB
 - normal/default session encode time > 50 ms, 또는 일반 laptop에서 stress fixture > 250 ms
 - Node benchmark에서 normal/default session heap delta > 5 MB, 또는 stress fixture > 20 MB
-- manual flush 중 browser main-thread stall이 관찰됨
+- manual flush 중 browser main-thread stall이 보임

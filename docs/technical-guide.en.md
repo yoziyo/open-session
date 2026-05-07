@@ -2,7 +2,7 @@
 
 Korean: [`technical-guide.md`](./technical-guide.md)
 
-Open Session is a browser SDK and Viewer that packages events before an error into an `osr1:` payload. It is not a screen recorder. The SDK stores metadata needed for debugging.
+Open Session consists of the SDK and Viewer. The SDK packages browser events before an error into an `osr1:` payload. The Viewer opens that payload. It is not a screen recorder, and the SDK stores only the metadata needed for error analysis.
 
 ## Packages
 
@@ -10,7 +10,7 @@ Open Session is a browser SDK and Viewer that packages events before an error in
 | --- | --- |
 | `@open-session/sdk` | Browser event capture, redaction, buffer, flush |
 | `@open-session/protocol` | Replay schema, compact format, compression, encryption |
-| `@open-session/viewer` | React app for inspecting payloads |
+| `@open-session/viewer` | React app for opening payloads |
 | `@open-session/sample-next` | Next.js sample app |
 
 ## Data flow
@@ -18,8 +18,8 @@ Open Session is a browser SDK and Viewer that packages events before an error in
 1. The app calls `initOpenSession()`.
 2. The SDK stores selected events in an in-memory buffer.
 3. The app calls `captureError()` and `flushOpenSession()` from an error path.
-4. The SDK converts the replay session into the compact format.
-5. The payload is compressed and encrypted with the passphrase. Web Crypto is used first; when `crypto.subtle` is unavailable, the SDK uses a JS fallback.
+4. The SDK converts the replay session into compact format.
+5. The SDK compresses the payload and encrypts it with the passphrase. It uses Web Crypto first; when `crypto.subtle` is unavailable, it uses a JS fallback.
 6. The app handles the payload in the `transport` callback.
 7. The Viewer decrypts the payload with the same passphrase.
 
@@ -115,7 +115,7 @@ initOpenSession({
 | `consoleLevels` | Reduces console noise. `["warn", "error"]` is a common starting point. |
 | `networkStatusFilter` | Filters network events before they enter the buffer. Use it to keep failed APIs only. |
 | `sampleRate` | Session-level sampling. `0.1` keeps about 10% of sessions. |
-| `beforeSend` | Final filter before encryption. Return a modified session or `null` to drop it. |
+| `beforeSend` | Final filter before encryption. Return a modified session or `null` to discard it. |
 | `maxEvents` | Maximum event count. When the buffer is full, lower-priority events are dropped first. |
 | `maxApproxBytes` | Pre-compression buffer budget. It is not the final payload size. |
 | `processing` | Flush execution mode. Supports `main-thread`, `auto`, and `worker`. |
@@ -123,7 +123,7 @@ initOpenSession({
 
 ## Internal limits
 
-These values are SDK internal defaults that prevent payload growth. They are not directly configurable through public `initOpenSession()` options.
+These values are SDK internal defaults that keep payloads from growing without bound. They are not directly configurable through public `initOpenSession()` options.
 
 | Item | Internal default | Meaning |
 | --- | --- | --- |
@@ -135,13 +135,13 @@ These values are SDK internal defaults that prevent payload growth. They are not
 | component stack length | `500` | Truncation budget for React component stack strings. |
 | worker flush timeout | `5000ms` | Wait time for worker flush responses. |
 
-The public limit options users can tune are `maxEvents`, `maxApproxBytes`, and `maxSanitizedStringLength`.
+The public limit options are `maxEvents`, `maxApproxBytes`, and `maxSanitizedStringLength`.
 
 ## Crypto runtime
 
 - When `crypto.subtle` is available, the SDK uses Web Crypto.
-- When `crypto.subtle` is unavailable, such as on hosts-based HTTP development domains, the SDK uses a JS fallback.
-- If `crypto.getRandomValues` is unavailable, flush fails because safe salt/iv generation is not possible. Use `debug: true` during development to see the reason.
+- When `crypto.subtle` is unavailable, such as on HTTP development domains mapped through the hosts file, the SDK uses a JS fallback.
+- If `crypto.getRandomValues` is unavailable, flush fails because the SDK cannot create a safe salt/iv. Use `debug: true` during development to see the reason.
 
 ## Privacy handling
 

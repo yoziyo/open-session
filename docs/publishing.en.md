@@ -1,6 +1,6 @@
 # Publishing
 
-This document only covers the execution steps for publishing Open Session packages to npm. The publishable packages are `@open-session/protocol` and `@open-session/sdk`. The Viewer and sample app are not published to npm.
+This document covers only the steps needed to publish Open Session packages to npm. The publishable packages are `@open-session/protocol` and `@open-session/sdk`. The Viewer and sample app are not published to npm.
 
 ## Rules
 
@@ -13,7 +13,7 @@ This document only covers the execution steps for publishing Open Session packag
 
 ## First manual publish
 
-If a package does not exist in the npm registry yet, there may be no package page where Trusted Publisher can be connected. In that case, publish the first version manually from a local npm account.
+If a package does not exist in the npm registry yet, there may be no package page for connecting Trusted Publisher. In that case, publish only the first version manually from a local npm account.
 
 ```bash
 git pull --ff-only
@@ -24,14 +24,14 @@ npm login --registry=https://registry.npmjs.org/
 npm whoami --registry=https://registry.npmjs.org/
 ```
 
-Make sure the registry uses HTTPS.
+Check that the registry uses HTTPS.
 
 ```bash
 npm config get registry
 npm config set registry https://registry.npmjs.org/
 ```
 
-For manual publish, create tarballs first and publish those tarballs.
+For manual publish, create tarballs first and publish those tarballs directly.
 
 ```bash
 tmp=$(mktemp -d)
@@ -62,20 +62,20 @@ A manually published version such as 0.1.0 may not have provenance. Confirm prov
 
 ## Writing changesets during work
 
-`pnpm changeset` is not automatic. The person making a package-visible change adds one manually.
+`pnpm changeset` is not automatic. Whoever makes a package-visible change should add one manually.
 
 ```bash
 pnpm changeset
 ```
 
-Add a changeset when:
+Use these criteria:
 
 - `@open-session/sdk` or `@open-session/protocol` runtime/API behavior changes
 - a bug fix affects npm package consumers
 - README, package docs, exports, or publish metadata changes are visible to package consumers
-- Viewer-only or sample-app-only changes usually do not need a changeset
+- Viewer-only or sample-app-only changes usually do not need a changeset if package contents do not change
 
-If many changes belong to the same release, keep multiple changesets. Before release, `pnpm version-packages` combines them into one version/changelog update per package and chooses the largest bump.
+If many changes belong to the same release, it is fine to keep multiple changesets. Before release, `pnpm version-packages` combines them into one version/changelog update per package and chooses the largest bump.
 
 ```text
 patch + patch = patch
@@ -83,11 +83,11 @@ patch + minor = minor
 patch + major = major
 ```
 
-It is fine to keep multiple changesets during development. A person may merge them before release, but it is not required.
+Multiple changesets can stay in the tree during development. A person may merge them before release, but it is not required.
 
 ## Normal release
 
-When it is time to release, update versions/changelogs locally and commit them.
+When releasing, update versions/changelogs locally and commit them.
 
 ```bash
 git pull --ff-only
@@ -109,7 +109,7 @@ git push origin v0.2.0
 
 The `v*` tag push runs the `Publish` workflow in `.github/workflows/release.yml`. The workflow runs `pnpm release:verify` again and publishes only package versions that are not already on npm.
 
-The key rule is that the version/changelog commit must already be on `main` before the tag is created. The tag workflow does not change versions; it only publishes.
+The version/changelog commit must already be on `main` before the tag is created. The tag workflow does not change versions; it only publishes.
 
 ## Verify publish
 
@@ -118,7 +118,7 @@ npm view @open-session/protocol version dist-tags --json
 npm view @open-session/sdk version dist-tags --json
 ```
 
-On the npm package page, confirm:
+On the npm package page, check:
 
 - version and `latest` dist-tag
 - README rendering
@@ -130,5 +130,5 @@ On the npm package page, confirm:
 
 - `426 Upgrade Required`: npm registry is set to `http://registry.npmjs.org`. Change it to `https://registry.npmjs.org/`.
 - `E403`: check npm scope permission, package name, 2FA/OTP, and Trusted Publisher connection.
-- Version already published: npm cannot publish the same version twice. Release the next version.
+- Version already published: npm cannot publish the same version twice. Publish the next version.
 - `--no-git-checks` warning/error: do not use `pnpm publish` directly for manual publish. Use `pnpm pack`, then `npm publish <tarball>`.

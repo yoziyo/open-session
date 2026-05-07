@@ -1,33 +1,21 @@
-# Payload Size Strategy
+# Payload size strategy
 
 Korean: [`payload-size.md`](./payload-size.md)
 
-The replay body is compacted and compressed before encryption. The encrypted
-bytes are then encoded into a copy/paste-safe `osr1:` envelope. Because encryption
-makes bytes look random, all size work has to happen before encryption.
+The replay body is compacted and compressed before encryption. The encrypted bytes are then encoded into a copy-paste-safe `osr1:` envelope. Because encrypted bytes look random, size reduction has to happen before encryption.
 
 ## Current defaults
 
-- Payload bodies use `compact-session-v1` with an internal revision-1
-  tuple/template/series codec.
-- Compression uses `brotli` by default. SDK `compressionLevel: 6` maps to the
-  fast Brotli mode for this structured body because higher modes were measured to
-  add large CPU/memory cost for very small size gains.
-- SDK flush processing defaults to `main-thread` for compatibility. For larger
-  buffers, prefer `processing: "auto"` or `processing: "worker"` with
-  `createFlushWorker` so Brotli work does not block the host app.
-- `osr1` payloads use compact envelope v2: short metadata keys and one
-  base64url ciphertext segment.
+- Payload bodies use `compact-session-v1` with an internal revision-1 tuple/template/series codec.
+- Compression uses `brotli` by default. SDK `compressionLevel: 6` maps to fast Brotli mode for this structured body. Higher modes produced small size gains and much higher CPU/memory cost.
+- SDK flush processing defaults to `main-thread` for compatibility. For larger buffers, use `processing: "auto"` or `processing: "worker"` with `createFlushWorker` so Brotli work blocks the host app less.
+- `osr1` payloads use compact envelope v2: short metadata keys and one base64url ciphertext segment.
 - Compact payload event IDs are regenerated from canonical event order during
   decode instead of serializing UUID-sized IDs.
-- Event-level `pageUrl` is kept in SDK capture after redaction. Repeated page
-  URLs are dictionary-compressed by `compact-session-v1`; keeping them avoids an
-  extra flush-time object-cloning pass and makes route-change context explicit.
-- Character keydowns omit physical key `code` and repeated bursts can coalesce
+- Event-level `pageUrl` stays in SDK capture after redaction. `compact-session-v1` dictionary-compresses repeated page URLs. Keeping them avoids an extra flush-time object-cloning pass and preserves route-change context.
+- Character keydowns omit physical key `code`, and repeated bursts can coalesce
   with `count`/`lastTimestamp`.
-- Console args are serialized into the string dictionary so URL/ID/stack-like
-  strings inside console payloads receive the same exact template/series coding.
-
+- Console args are serialized into the string dictionary. URL/ID/stack-like strings inside console payloads get the same template/series coding.
 
 ## Measurement snapshot
 
@@ -37,7 +25,7 @@ Run the synthetic benchmark with:
 pnpm bench:payload
 ```
 
-Representative result after removing the benchmark-only generated profile:
+Results excluding the benchmark-only generated profile:
 
 | Profile | Logical events | Captured events | Compact JSON | Brotli level 6 body | Envelope chars | Saved |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -48,9 +36,9 @@ Representative result after removing the benchmark-only generated profile:
 | `stress-high-entropy` | 2,110 | 2,110 | 104,695 B | 11,702 B | 16,015 | 88.8% |
 | `high-entropy-reference` | 2,110 | 2,110 | 104,698 B | 11,699 B | 16,015 | 88.8% |
 
-The gated stress profiles remain below the `20,000` compressed body-byte target
+The gated stress profiles stay below the `20,000` compressed body-byte target
 at `compressionLevel: 6` without fixture regeneration or data reduction. The
-final copy/paste envelope is larger than compressed bytes because AES-GCM adds an
+final copy-paste envelope is larger than the compressed bytes because AES-GCM adds an
 authentication tag and base64url text expands encrypted bytes.
 
 ## Persisted stress fixtures
@@ -61,8 +49,7 @@ authentication tag and base64url text expands encrypted bytes.
 - `stress-repetitive-uncoalesced.*`: 20KB compressed-body regression fixture.
 - `stress-high-entropy.*`: high-cardinality 20KB compressed-body regression
   fixture.
-- `high-entropy-reference.*`: same high-cardinality shape for comparison; no
-  extra fixture profile is used.
+- `high-entropy-reference.*`: same high-cardinality shape for comparison. No separate fixture profile is used.
 
 ## Runtime tuning examples
 
@@ -90,7 +77,7 @@ initOpenSession({
 });
 ```
 
-Strict worker mode for apps that have already validated worker and CSP support:
+Strict worker mode for apps with validated worker and CSP support:
 
 ```ts
 initOpenSession({
