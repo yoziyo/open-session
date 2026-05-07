@@ -3,12 +3,27 @@
 import type { ErrorInfo, ReactNode } from "react";
 import { Component } from "react";
 import { useSampleI18n } from "../lib/i18n";
-import { captureSampleError, flushSampleReplay } from "../lib/replay";
+import { captureSampleError, flushSampleReplay, OPEN_PASSPHRASE } from "../lib/replay";
 
 interface State {
   copyState?: "idle" | "copied" | "failed";
   error?: Error;
   payload?: string;
+}
+
+const configuredViewerUrl = process.env.NEXT_PUBLIC_OPEN_SESSION_VIEWER_URL;
+
+function resolveViewerBaseUrl() {
+  if (configuredViewerUrl) return configuredViewerUrl;
+  if (typeof window !== "undefined" && ["localhost", "127.0.0.1"].includes(window.location.hostname)) return "http://127.0.0.1:3101/";
+  return "https://yoziyo.github.io/open-session/viewer/";
+}
+
+function viewerUrlWithPassphrase() {
+  const baseUrl = typeof window === "undefined" ? "https://yoziyo.github.io/open-session/viewer/" : resolveViewerBaseUrl();
+  const url = new URL(baseUrl, typeof window === "undefined" ? "https://yoziyo.github.io" : window.location.origin);
+  url.searchParams.set("passphrase", OPEN_PASSPHRASE);
+  return url.toString();
 }
 
 type ErrorBoundaryLabels = {
@@ -22,6 +37,7 @@ type ErrorBoundaryLabels = {
   payloadAria: string;
   copyPayload: string;
   copySuccess: string;
+  openViewer: string;
   pending: string;
 };
 
@@ -83,6 +99,9 @@ export class ErrorBoundary extends Component<{ children: ReactNode; labels: Erro
                 <button className="button" data-testid="copy-payload" type="button" onClick={() => void this.copyPayload()}>
                   {labels.copyPayload}
                 </button>
+                <a className="button secondary" data-testid="open-viewer" href={viewerUrlWithPassphrase()} target="_blank" rel="noreferrer">
+                  {labels.openViewer}
+                </a>
               </div>
             </div>
           ) : (
@@ -112,6 +131,7 @@ export function LocalizedErrorBoundary({ children }: { children: ReactNode }) {
         payloadAria: t("incident.payloadAria"),
         copyPayload: t("incident.copyPayload"),
         copySuccess: t("incident.copySuccess"),
+        openViewer: t("incident.openViewer"),
         pending: t("incident.pending"),
       }}
     >

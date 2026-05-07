@@ -78,6 +78,7 @@
     "payloadAria": "복사할 리플레이 payload",
     "copyPayload": "payload 복사",
     "copySuccess": "payload가 복사되었습니다.",
-    "pending": "리플레이 payload를 생성하는 중입니다."
+    "pending": "리플레이 payload를 생성하는 중입니다.",
+    "openViewer": "Viewer 열기"
   }
 }

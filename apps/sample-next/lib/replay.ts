@@ -3,7 +3,7 @@
 import { captureError, type FlushResult, flushOpenSession, initOpenSession } from "@open-session/sdk";
 
 const OPEN_APP_ID = "sample-next";
-const OPEN_PASSPHRASE = "demo-passphrase";
+export const OPEN_PASSPHRASE = "demo-passphrase";
 
 type ReplayProcessing = "main-thread" | "auto" | "worker";
 

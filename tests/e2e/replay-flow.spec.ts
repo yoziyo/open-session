@@ -54,6 +54,7 @@ test("sample app emits encrypted payload and viewer decodes it without leaking s
   await expect(page.getByTestId("payload-alert")).toBeVisible();
   await expect(page.getByTestId("payload-textarea")).toHaveValue(payload);
   await expect(page.getByTestId("copy-payload")).toBeVisible();
+  await expect(page.getByTestId("open-viewer")).toHaveAttribute("href", `${viewerUrl}/?passphrase=${encodeURIComponent(passphrase)}`);
 
   for (const secret of forbiddenSecrets) expect(payload).not.toContain(secret);
 

@@ -78,6 +78,7 @@
     "payloadAria": "Replay payload to copy",
     "copyPayload": "Copy payload",
     "copySuccess": "Payload copied.",
-    "pending": "Generating replay payload."
+    "pending": "Generating replay payload.",
+    "openViewer": "Open Viewer"
   }
 }
