@@ -4,6 +4,12 @@ import { useEffect, useMemo, useState } from "react";
 import { type SampleTranslationKey, useSampleI18n } from "../lib/i18n";
 import { initSampleReplay } from "../lib/replay";
 
+const sampleBasePath = process.env.NEXT_PUBLIC_OPEN_SESSION_SAMPLE_BASE_PATH ?? "";
+
+function sampleAssetPath(path: string) {
+  return `${sampleBasePath}${path}`;
+}
+
 const basket = [
   { nameKey: "order.items.item1Name", noteKey: "order.items.item1Note", price: 17900 },
   { nameKey: "order.items.item2Name", noteKey: "order.items.item2Note", price: 3980 },
@@ -68,7 +74,9 @@ export function DemoControls() {
   async function callApi() {
     setStatus("approving");
     console.warn(t("console.preApprovalWarning"));
-    const response = await fetch("/api/ping?token=e2e-super-secret-token&email=person@example.test&invite=VIP-042&safe=visible");
+    const response = await fetch(
+      sampleAssetPath("/api/ping.json?token=e2e-super-secret-token&email=person@example.test&invite=VIP-042&safe=visible"),
+    );
     const result = await response.json();
     console.log(t("console.preApprovalDone"), {
       orderId: result.orderId,

@@ -1,0 +1,7 @@
+{
+  "ok": true,
+  "orderId": "ORD-20260430-1842",
+  "provider": "sample-card-gateway",
+  "authorizationId": "AUTH-9f42-safe",
+  "at": "2026-04-30T18:42:00.000Z"
+}

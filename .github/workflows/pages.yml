@@ -1,0 +1,71 @@
+name: Deploy Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Viewer
+        run: pnpm --filter @open-session/viewer build
+        env:
+          OPEN_SESSION_VIEWER_BASE: /open-session/viewer/
+
+      - name: Build Sample
+        run: pnpm --filter @open-session/sample-next build
+        env:
+          OPEN_SESSION_STATIC_EXPORT: "1"
+          OPEN_SESSION_SAMPLE_BASE_PATH: /open-session/sample
+          NEXT_PUBLIC_OPEN_SESSION_SAMPLE_BASE_PATH: /open-session/sample
+
+      - name: Assemble Pages artifact
+        run: |
+          rm -rf dist-pages
+          mkdir -p dist-pages/viewer dist-pages/sample
+          cp -R apps/viewer/dist/. dist-pages/viewer/
+          cp -R apps/sample-next/out/. dist-pages/sample/
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist-pages
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
