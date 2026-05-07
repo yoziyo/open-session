@@ -1,6 +1,6 @@
 {
   "name": "@open-session/sdk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Browser SDK for capturing privacy-safe Open Session replay context and emitting encrypted payloads.",
   "license": "MIT",
   "author": "Open Session contributors",

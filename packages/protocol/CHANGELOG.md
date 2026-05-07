@@ -1,5 +1,11 @@
 # @open-session/protocol
 
+## 0.1.2
+
+### Patch Changes
+
+- 불필요 옵션 조정
+
 ## 0.1.1
 
 ### Patch Changes

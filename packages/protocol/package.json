@@ -1,6 +1,6 @@
 {
   "name": "@open-session/protocol",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Protocol, encryption, compression, and payload helpers for Open Session replay payloads.",
   "license": "MIT",
   "author": "Open Session contributors",
