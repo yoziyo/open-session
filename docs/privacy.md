@@ -30,8 +30,7 @@ SDK는 보수적인 privacy model에서 시작합니다. Secret이 아니라 진
 - `excludeSelectors`: DOM interaction event를 완전히 버립니다.
 - `additionalQueryKeys`: 추가 URL query key를 redact합니다.
 - `capture`: clicks, keydown, navigation, network, console, errors category를 끌 수 있습니다.
-- `maxConsoleArgs`, `maxConsoleObjectKeys`, `maxConsoleArrayEntries`: console payload breadth를 제한합니다.
-- `maxSanitizedStringLength`, `maxErrorStackLength`, `maxComponentStackLength`: 큰 string과 stack을 제한합니다.
+- `maxSanitizedStringLength`: 큰 문자열을 제한합니다. console 인자 수, object key 수, stack 길이는 SDK 내부 기본값으로 제한합니다.
 - `compressionLevel`: Brotli size/CPU tradeoff를 조정합니다.
 - `processing`: `main-thread`, `auto`, `worker` flush encoding을 선택합니다.
 

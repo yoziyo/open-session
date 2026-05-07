@@ -54,8 +54,6 @@ initOpenSession({
 
   maxEvents: 200,
   maxApproxBytes: 500_000,
-  compressionLevel: 6,
-  keydownCoalesceWindowMs: 350,
 
   additionalQueryKeys: ["invite", "coupon", "paymentToken"],
   maskSelectors: ["[data-replay-mask]"],
@@ -121,7 +119,6 @@ export function initOpenReporter(): void {
     passphrase: "user-controlled-secret",
     maxEvents: 200,
     maxApproxBytes: 500_000,
-    compressionLevel: 6,
     additionalQueryKeys: ["paymentToken"],
     maskSelectors: ["[data-replay-mask]"],
     excludeSelectors: ["[data-replay-exclude]"],
@@ -206,38 +203,6 @@ transport(payload) {
 
 Slack webhook, OpenSearch, S3, R2 같은 곳으로 보낼 수는 있습니다. 다만 브라우저에서 직접 credential을 들고 호출하지 마세요. 서버 API를 거쳐 처리하는 쪽이 안전합니다.
 
-## worker flush
-
-수집은 메인 스레드에서 합니다. worker 옵션은 flush 시점의 작업만 옮깁니다.
-
-- replay session 정리
-- compact 변환
-- Brotli 압축
-- 암호화
-- `osr1:` envelope 생성
-
-기본값은 `main-thread`입니다. 호환성이 가장 좋아 기본값으로 둡니다. payload가 커지거나 flush 중 UI 멈춤이 보이면 `auto`를 검토하세요.
-
-```ts
-initOpenSession({
-  passphrase: "user-controlled-secret",
-  transport,
-  processing: "auto",
-  createFlushWorker: () =>
-    new Worker(new URL("@open-session/sdk/flush-worker", import.meta.url), {
-      type: "module",
-    }),
-});
-```
-
-모드 차이는 아래와 같습니다.
-
-| 값 | 동작 |
-| --- | --- |
-| `main-thread` | worker를 쓰지 않습니다. 가장 호환성이 좋습니다. |
-| `auto` | worker를 시도하고, 실패하면 main thread로 돌아옵니다. |
-| `worker` | worker가 반드시 필요합니다. 실패하면 flush도 실패합니다. |
-
 ## 주요 옵션
 
 | 옵션 | 추천 시작값 | 설명 |
@@ -248,8 +213,6 @@ initOpenSession({
 | `sampleRate` | `1` | session 단위 sampling. `0`은 모두 drop, `1`은 모두 keep |
 | `maxEvents` | `200` | 버퍼에 남길 최대 이벤트 수. SDK 기본값은 `250`입니다. |
 | `maxApproxBytes` | `500_000` | 압축 전 버퍼 크기 제한. SDK 기본값은 `750_000`입니다. |
-| `compressionLevel` | `6` | 기본 압축 레벨. 크기보다 CPU가 중요하면 낮추고, 크기가 더 중요하면 올립니다. |
-| `keydownCoalesceWindowMs` | `350` | 연속 keydown 병합 시간 |
 | `additionalQueryKeys` | 서비스별 설정 | 추가로 마스킹할 query key |
 | `maskSelectors` | `[data-replay-mask]` | 이벤트는 남기고 DOM target을 마스킹할 영역 |
 | `excludeSelectors` | `[data-replay-exclude]` | 이벤트 자체를 버릴 DOM 영역 |
@@ -259,7 +222,6 @@ initOpenSession({
 | `consoleLevels` | `["warn", "error"]` | console 수집을 필요한 level로 제한 |
 | `capture.*` | 모두 `true` | 아래 수집 범위 옵션으로 event category를 끄고 켭니다. |
 | `beforeSend` | 서비스별 정책 | 암호화/전송 직전 session 수정 또는 drop |
-| `processing` | 기본 `main-thread`, 운영 권장 `auto` | flush 작업을 어디서 처리할지 정합니다. |
 
 ### 수집 범위 옵션
 
@@ -323,13 +285,8 @@ initOpenSession({
 | `excludeUrls` | 없음 | 문자열/정규식과 맞는 network URL 이벤트를 버립니다. |
 | `excludeConsole` | 없음 | 문자열/정규식과 맞는 console 이벤트를 버립니다. |
 | `maxSanitizedStringLength` | `500` | console/error 문자열을 이 길이 이후 잘라냅니다. |
-| `maxConsoleArgs` | `10` | console 호출 1회당 남길 인자 수 |
-| `maxConsoleObjectKeys` | `30` | console object에서 남길 key 수 |
-| `maxConsoleArrayEntries` | `20` | console array에서 남길 entry 수 |
-| `maxErrorStackLength` | `500` | error stack 최대 길이 |
-| `maxComponentStackLength` | `500` | React component stack 최대 길이 |
 
-운영 기본값은 “적게 수집하고 안전하게 자르기”를 권장합니다. 결제, 인증, 의료, 관리자 화면처럼 민감도가 높은 영역은 `excludeSelectors`, `excludeUrls`, `excludeConsole`을 먼저 적용한 뒤 필요한 category만 켜세요.
+console argument 수, object key 수, stack 길이 같은 세부 제한값은 SDK 내부 기본값으로 관리됩니다. 운영 기본값은 “적게 수집하고 안전하게 자르기”를 권장합니다. 결제, 인증, 의료, 관리자 화면처럼 민감도가 높은 영역은 `excludeSelectors`, `excludeUrls`, `excludeConsole`을 먼저 적용한 뒤 필요한 category만 켜세요.
 
 ## Viewer에서 확인하기
 

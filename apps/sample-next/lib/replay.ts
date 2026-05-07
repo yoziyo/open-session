@@ -49,8 +49,6 @@ export function initSampleReplay(): void {
     maxEvents: 200,
     maxApproxBytes: 500_000,
     compressionLevel: configuredCompressionLevel(),
-    keydownCoalesceWindowMs: 350,
-
     // 결제/초대 링크처럼 서비스에만 존재하는 민감 query key를 추가로 마스킹합니다.
     additionalQueryKeys: ["invite", "coupon", "paymentToken"],
     maskSelectors: ["[data-replay-mask]"],

@@ -55,9 +55,6 @@ initOpenSession({
   maxEvents: 200,
   maxApproxBytes: 500_000,
   sampleRate: 1,
-  compressionLevel: 6,
-  keydownCoalesceWindowMs: 350,
-
   additionalQueryKeys: ["invite", "coupon", "paymentToken"],
   maskSelectors: ["[data-replay-mask]"],
   excludeSelectors: ["[data-replay-exclude]"],

@@ -13,7 +13,6 @@ export interface ReplayBufferOptions {
   maxEvents: number;
   maxApproxBytes: number;
   createEventId?: (() => string) | undefined;
-  keydownCoalesceWindowMs?: number | undefined;
 }
 
 export class ReplayBuffer {
@@ -71,7 +70,7 @@ export class ReplayBuffer {
 
     const incoming = event as KeydownReplayEvent;
     const previous = last as KeydownReplayEvent;
-    const windowMs = this.options.keydownCoalesceWindowMs ?? 1000;
+    const windowMs = 1000;
     const previousTimestamp = previous.lastTimestamp ?? previous.timestamp;
     const sameInput =
       previous.privacy === incoming.privacy &&

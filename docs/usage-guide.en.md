@@ -55,8 +55,6 @@ initOpenSession({
 
   maxEvents: 200,
   maxApproxBytes: 500_000,
-  compressionLevel: 6,
-  keydownCoalesceWindowMs: 350,
 
   additionalQueryKeys: ["invite", "coupon", "paymentToken"],
   maskSelectors: ["[data-replay-mask]"],
@@ -122,7 +120,6 @@ export function initOpenReporter(): void {
     passphrase: "user-controlled-secret",
     maxEvents: 200,
     maxApproxBytes: 500_000,
-    compressionLevel: 6,
     additionalQueryKeys: ["paymentToken"],
     maskSelectors: ["[data-replay-mask]"],
     excludeSelectors: ["[data-replay-exclude]"],
@@ -207,36 +204,6 @@ transport(payload) {
 
 From that server route, you can forward payloads to Slack webhooks, OpenSearch, S3, R2, or any other storage you control. Do not put those credentials in the browser.
 
-## Worker flush
-
-Capture runs on the main thread. The worker option only moves flush-time work:
-
-- session cleanup
-- compact encoding
-- Brotli compression
-- encryption
-- `osr1:` envelope creation
-
-The default is `main-thread` because it works with more bundlers and CSP setups. If payloads are large or flush causes UI pauses, use `auto` after testing it in your app.
-
-```ts
-initOpenSession({
-  passphrase: "user-controlled-secret",
-  transport,
-  processing: "auto",
-  createFlushWorker: () =>
-    new Worker(new URL("@open-session/sdk/flush-worker", import.meta.url), {
-      type: "module",
-    }),
-});
-```
-
-| Value | Behavior |
-| --- | --- |
-| `main-thread` | Does not use a worker. Most compatible. |
-| `auto` | Tries the worker and falls back to main thread if it fails. |
-| `worker` | Requires the worker. Flush fails if the worker fails. |
-
 ## Main options
 
 | Option | Suggested start | Meaning |
@@ -247,8 +214,6 @@ initOpenSession({
 | `sampleRate` | `1` | Session-level sampling. `0` drops all sessions and `1` keeps all sessions. |
 | `maxEvents` | `200` | Maximum retained events. SDK default is `250`. |
 | `maxApproxBytes` | `500_000` | Pre-compression buffer budget. SDK default is `750_000`. |
-| `compressionLevel` | `6` | Compression level. Lower it for CPU, raise it for size. |
-| `keydownCoalesceWindowMs` | `350` | Keydown coalescing window |
 | `additionalQueryKeys` | app-specific | Extra query keys to redact |
 | `maskSelectors` | `[data-replay-mask]` | Keep the event but mask its DOM target |
 | `excludeSelectors` | `[data-replay-exclude]` | Drop events from matching DOM areas |
@@ -258,7 +223,6 @@ initOpenSession({
 | `consoleLevels` | `["warn", "error"]` | Limit console capture to the levels you need |
 | `capture.*` | all `true` | Toggle event categories with the capture-scope options below. |
 | `beforeSend` | app policy | Modify or drop the session immediately before encryption/transport |
-| `processing` | default `main-thread`, production `auto` | Where flush work runs |
 
 ### Capture-scope options
 
@@ -322,13 +286,8 @@ These options do not expand collection. They reduce or truncate what is kept in 
 | `excludeUrls` | none | Drop network URL events matching a string or regular expression. |
 | `excludeConsole` | none | Drop console events matching a string or regular expression. |
 | `maxSanitizedStringLength` | `500` | Truncate console/error strings after this length. |
-| `maxConsoleArgs` | `10` | Maximum retained args per console call |
-| `maxConsoleObjectKeys` | `30` | Maximum retained keys per console object |
-| `maxConsoleArrayEntries` | `20` | Maximum retained entries per console array |
-| `maxErrorStackLength` | `500` | Maximum error stack length |
-| `maxComponentStackLength` | `500` | Maximum React component stack length |
 
-For production, prefer “collect less and truncate safely.” For checkout, auth, healthcare, or admin surfaces, start with `excludeSelectors`, `excludeUrls`, and `excludeConsole`, then enable only the categories the team needs.
+Detailed limits such as console argument count, object key count, and stack length are managed by SDK internal defaults. For production, prefer “collect less and truncate safely.” For checkout, auth, healthcare, or admin surfaces, start with `excludeSelectors`, `excludeUrls`, and `excludeConsole`, then enable only the categories the team needs.
 
 ## Open in the viewer
 

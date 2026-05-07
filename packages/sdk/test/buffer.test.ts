@@ -54,11 +54,10 @@ describe("ReplayBuffer", () => {
     expect(buffer.snapshot()).toEqual([expect.objectContaining({ kind: "truncate", reason: "byte-limit" })]);
   });
 
-  it("coalesces repeated keydown events within the configured time window", () => {
+  it("coalesces repeated keydown events within the internal time window", () => {
     const buffer = new ReplayBuffer({
       maxEvents: 10,
       maxApproxBytes: 10_000,
-      keydownCoalesceWindowMs: 500,
     });
     const keydown = (timestamp: number): ReplayEvent => ({
       id: String(timestamp),

@@ -121,6 +121,22 @@ initOpenSession({
 | `processing` | Flush execution mode. Supports `main-thread`, `auto`, and `worker`. |
 | `debug` | Enables init/capture/flush diagnostics. Payloads, passphrases, and raw sessions are not logged. |
 
+## Internal limits
+
+These values are SDK internal defaults that prevent payload growth. They are not directly configurable through public `initOpenSession()` options.
+
+| Item | Internal default | Meaning |
+| --- | --- | --- |
+| keydown coalescing window | `1000ms` | Coalesces repeated keydown events on the same target. |
+| console argument count | `10` | Maximum retained args per console call. |
+| console object key count | `30` | Maximum retained keys per object. |
+| console array entry count | `20` | Maximum retained entries per array. |
+| error stack length | `500` | Truncation budget for error stack strings. |
+| component stack length | `500` | Truncation budget for React component stack strings. |
+| worker flush timeout | `5000ms` | Wait time for worker flush responses. |
+
+The public limit options users can tune are `maxEvents`, `maxApproxBytes`, and `maxSanitizedStringLength`.
+
 ## Crypto runtime
 
 - When `crypto.subtle` is available, the SDK uses Web Crypto.
@@ -143,7 +159,7 @@ Additional controls:
 - `excludeSelectors` drops DOM events from selected regions.
 - `excludeUrls` drops network events.
 - `excludeConsole` drops console events.
-- `maxSanitizedStringLength`, `maxConsoleArgs`, and `maxErrorStackLength` limit payload size.
+- `maxSanitizedStringLength` limits large strings. Console argument count, object key count, and stack length are limited by SDK internal defaults.
 
 ## Viewer workflow
 

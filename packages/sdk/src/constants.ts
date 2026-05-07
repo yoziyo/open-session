@@ -15,6 +15,9 @@ export const DEFAULT_REPLAY_LIMITS = Object.freeze({
   maxEvents: 250,
   maxApproxBytes: 750_000,
   compressionLevel: 6,
+});
+
+export const INTERNAL_REPLAY_LIMITS = Object.freeze({
   flushWorkerTimeoutMs: 5_000,
 });
 

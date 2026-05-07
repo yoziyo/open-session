@@ -53,14 +53,7 @@ function validateReplayInitOptions(options: ReplayInitOptions): void {
   assertIntegerInRange("compressionLevel", options.compressionLevel, 0, 9);
   assertIntegerInRange("maxEvents", options.maxEvents, 1);
   assertIntegerInRange("maxApproxBytes", options.maxApproxBytes, 1);
-  assertIntegerInRange("flushWorkerTimeoutMs", options.flushWorkerTimeoutMs, 1);
-  assertIntegerInRange("keydownCoalesceWindowMs", options.keydownCoalesceWindowMs, 0);
   assertIntegerInRange("maxSanitizedStringLength", options.maxSanitizedStringLength, 1);
-  assertIntegerInRange("maxConsoleArgs", options.maxConsoleArgs, 0);
-  assertIntegerInRange("maxConsoleObjectKeys", options.maxConsoleObjectKeys, 0);
-  assertIntegerInRange("maxConsoleArrayEntries", options.maxConsoleArrayEntries, 0);
-  assertIntegerInRange("maxErrorStackLength", options.maxErrorStackLength, 1);
-  assertIntegerInRange("maxComponentStackLength", options.maxComponentStackLength, 1);
 }
 
 function shouldSampleSession(options: ReplayInitOptions): boolean {
@@ -114,7 +107,6 @@ export function initOpenSession(options: ReplayInitOptions): ReplayClient {
     maxEvents: options.maxEvents ?? DEFAULT_REPLAY_LIMITS.maxEvents,
     maxApproxBytes: options.maxApproxBytes ?? DEFAULT_REPLAY_LIMITS.maxApproxBytes,
     createEventId,
-    keydownCoalesceWindowMs: options.keydownCoalesceWindowMs,
   });
   const cleanups: Array<() => void> = [];
   let flushInFlight: Promise<FlushResult> | null = null;

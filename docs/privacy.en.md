@@ -32,8 +32,7 @@ fidelity.
 - `excludeSelectors` — drop DOM interaction events entirely.
 - `additionalQueryKeys` — redact extra URL query keys.
 - `capture` — disable clicks, keydown, navigation, network, console, or errors by category.
-- `maxConsoleArgs`, `maxConsoleObjectKeys`, `maxConsoleArrayEntries` — bound console payload breadth.
-- `maxSanitizedStringLength`, `maxErrorStackLength`, `maxComponentStackLength` — bound large strings and stacks.
+- `maxSanitizedStringLength` — bounds large strings. Console argument count, object key count, and stack length are limited by SDK internal defaults.
 - `compressionLevel` — tune Brotli size/CPU tradeoff.
 - `processing` — choose `main-thread`, `auto`, or `worker` flush encoding.
 

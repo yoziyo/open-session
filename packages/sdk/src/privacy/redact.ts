@@ -7,12 +7,16 @@ export interface RedactionOptions {
   excludeUrls?: Array<string | RegExp>;
   excludeConsole?: Array<string | RegExp>;
   maxSanitizedStringLength?: number;
-  maxConsoleArgs?: number;
-  maxConsoleObjectKeys?: number;
-  maxConsoleArrayEntries?: number;
-  maxErrorStackLength?: number;
-  maxComponentStackLength?: number;
 }
+
+export const DEFAULT_REDACTION_LIMITS = Object.freeze({
+  maxSanitizedStringLength: 500,
+  maxConsoleArgs: 10,
+  maxConsoleObjectKeys: 30,
+  maxConsoleArrayEntries: 20,
+  maxErrorStackLength: 500,
+  maxComponentStackLength: 500,
+});
 
 export const REDACTED_VALUE = "[redacted]";
 
@@ -82,20 +86,20 @@ export function sanitizeUnknown(value: unknown, redactions: string[] = [], depth
   if (depth > 3) return "[truncated-depth]";
   if (value == null || typeof value === "number" || typeof value === "boolean") return value;
   if (typeof value === "string") {
-    return sanitizeString(value, redactions, options.maxSanitizedStringLength);
+    return sanitizeString(value, redactions, options.maxSanitizedStringLength ?? DEFAULT_REDACTION_LIMITS.maxSanitizedStringLength);
   }
   if (value instanceof Error) {
     return {
       name: value.name,
-      message: sanitizeString(value.message, redactions, options.maxSanitizedStringLength),
+      message: sanitizeString(value.message, redactions, options.maxSanitizedStringLength ?? DEFAULT_REDACTION_LIMITS.maxSanitizedStringLength),
       stack: value.stack ? sanitizeString(value.stack, redactions) : undefined,
     };
   }
   if (Array.isArray(value))
-    return value.slice(0, options.maxConsoleArrayEntries ?? 20).map((entry) => sanitizeUnknown(entry, redactions, depth + 1, options));
+    return value.slice(0, DEFAULT_REDACTION_LIMITS.maxConsoleArrayEntries).map((entry) => sanitizeUnknown(entry, redactions, depth + 1, options));
   if (typeof value === "object") {
     const output: Record<string, unknown> = {};
-    for (const [key, entry] of Object.entries(value as Record<string, unknown>).slice(0, options.maxConsoleObjectKeys ?? 30)) {
+    for (const [key, entry] of Object.entries(value as Record<string, unknown>).slice(0, DEFAULT_REDACTION_LIMITS.maxConsoleObjectKeys)) {
       if (isSensitiveName(key)) {
         output[key] = REDACTED_VALUE;
         redactions.push(`object:${key}`);

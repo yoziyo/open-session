@@ -13,6 +13,7 @@ import {
   type ReplayClient,
   shutdownReplay,
 } from "../src";
+import { INTERNAL_REPLAY_LIMITS } from "../src/constants";
 
 const captureOff = {
   clicks: false,
@@ -26,6 +27,7 @@ const captureOff = {
 let client: ReplayClient | undefined;
 
 afterEach(() => {
+  vi.useRealTimers();
   shutdownReplay();
   client = undefined;
 });
@@ -237,17 +239,19 @@ describe("initOpenSession flush", () => {
   });
 
   it("reports an isolated flush failure when strict worker processing times out", async () => {
+    vi.useFakeTimers();
     const worker = new SilentFlushWorker();
     client = initOpenSession({
       sessionId: "strict-worker-timeout-session",
       passphrase: "demo-passphrase",
       processing: "worker",
       createFlushWorker: () => worker as unknown as Worker,
-      flushWorkerTimeoutMs: 1,
       capture: captureOff,
     });
 
-    const result = await client.flush("strict-worker-timeout");
+    const resultPromise = client.flush("strict-worker-timeout");
+    await vi.advanceTimersByTimeAsync(INTERNAL_REPLAY_LIMITS.flushWorkerTimeoutMs);
+    const result = await resultPromise;
 
     expect(result.ok).toBe(false);
     expect(result.error?.message).toBe("Replay flush worker timed out");

@@ -1,5 +1,5 @@
 import { type EncodedReplayPayload, encodeReplayPayload, type ReplaySession } from "@open-session/protocol";
-import { DEFAULT_REPLAY_LIMITS } from "./constants";
+import { INTERNAL_REPLAY_LIMITS } from "./constants";
 import { safeRandomId } from "./event-id";
 import type { ReplayInitOptions } from "./types";
 
@@ -27,7 +27,7 @@ async function encodeWithWorker(session: ReplaySession, passphrase: string, opti
   const worker = options.createFlushWorker?.();
   if (!worker) throw new Error("createFlushWorker is required");
   const requestId = safeRandomId("flush");
-  const timeoutMs = options.flushWorkerTimeoutMs ?? DEFAULT_REPLAY_LIMITS.flushWorkerTimeoutMs;
+  const timeoutMs = INTERNAL_REPLAY_LIMITS.flushWorkerTimeoutMs;
 
   return await new Promise<EncodedReplayPayload>((resolve, reject) => {
     const timeout = setTimeout(() => {

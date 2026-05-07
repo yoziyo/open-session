@@ -64,8 +64,6 @@ export interface ReplayInitOptions extends RedactionOptions {
    * Advanced override for bundlers/CSP policies that need a custom worker URL.
    */
   createFlushWorker?: () => Worker;
-  flushWorkerTimeoutMs?: number;
-  keydownCoalesceWindowMs?: number;
   /**
    * Console levels to capture when capture.console is enabled. Defaults to all
    * supported console levels.

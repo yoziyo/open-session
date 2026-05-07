@@ -113,9 +113,6 @@ initOpenSession({
   maxEvents: 100,
   maxApproxBytes: 150_000,
   compressionLevel: 6,
-  maxConsoleArgs: 3,
   maxSanitizedStringLength: 160,
-  maxErrorStackLength: 300,
-  maxComponentStackLength: 300,
 });
 ```

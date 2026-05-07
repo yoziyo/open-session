@@ -121,6 +121,22 @@ initOpenSession({
 | `processing` | flush 작업 위치입니다. `main-thread`, `auto`, `worker`를 지원합니다. |
 | `debug` | init/capture/flush 진단 로그를 켭니다. payload, passphrase, session 원문은 남기지 않습니다. |
 
+## 내부 제한값
+
+아래 값은 payload 폭주를 막기 위한 SDK 내부 기본값입니다. public `initOpenSession()` 옵션으로 직접 조정하지 않습니다.
+
+| 항목 | 내부 기본값 | 의미 |
+| --- | --- | --- |
+| keydown 병합 시간 | `1000ms` | 같은 target의 연속 keydown event를 묶습니다. |
+| console 인자 수 | `10` | console 호출 1회에서 남길 최대 arg 수입니다. |
+| console object key 수 | `30` | object 하나에서 남길 최대 key 수입니다. |
+| console array entry 수 | `20` | array 하나에서 남길 최대 entry 수입니다. |
+| error stack 길이 | `500` | error stack 문자열 truncate 기준입니다. |
+| component stack 길이 | `500` | React component stack 문자열 truncate 기준입니다. |
+| worker flush timeout | `5000ms` | worker flush 응답 대기 시간입니다. |
+
+사용자가 조정할 수 있는 public 제한값은 `maxEvents`, `maxApproxBytes`, `maxSanitizedStringLength`입니다.
+
 ## 암호화 런타임
 
 - `crypto.subtle`이 있으면 Web Crypto를 사용합니다.
@@ -143,7 +159,7 @@ SDK는 아래 값을 기본으로 저장하지 않습니다.
 - `excludeSelectors`로 특정 영역의 DOM event를 버립니다.
 - `excludeUrls`로 network event를 버립니다.
 - `excludeConsole`로 console event를 버립니다.
-- `maxSanitizedStringLength`, `maxConsoleArgs`, `maxErrorStackLength`로 payload 크기를 제한합니다.
+- `maxSanitizedStringLength`로 큰 문자열을 제한합니다. console 인자 수, object key 수, stack 길이는 SDK 내부 기본값으로 제한합니다.
 
 ## Viewer 확인 순서
 

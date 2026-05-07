@@ -1,6 +1,6 @@
 import type { ReplayBuffer } from "../buffer";
 import type { EventIdFactory } from "../event-id";
-import { currentRedactedUrl, matchesPattern, sanitizeUnknown } from "../privacy/redact";
+import { currentRedactedUrl, DEFAULT_REDACTION_LIMITS, matchesPattern, sanitizeUnknown } from "../privacy/redact";
 import type { ConsoleCaptureLevel, ReplayInitOptions } from "../types";
 
 const DEFAULT_LEVELS: ConsoleCaptureLevel[] = ["log", "info", "warn", "error", "debug"];
@@ -24,7 +24,7 @@ export function installConsoleCapture(buffer: ReplayBuffer, options: ReplayInitO
         const joined = args.map(stringifyForMatching).join(" ");
         if (!matchesPattern(joined, options.excludeConsole)) {
           const redactions: string[] = [];
-          const safeArgs = args.slice(0, options.maxConsoleArgs ?? 10).map((arg) => sanitizeUnknown(arg, redactions, 0, options));
+          const safeArgs = args.slice(0, DEFAULT_REDACTION_LIMITS.maxConsoleArgs).map((arg) => sanitizeUnknown(arg, redactions, 0, options));
           if (redactions.length) buffer.markRedaction(redactions.length);
           buffer.add({
             id: createEventId(),

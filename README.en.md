@@ -2,15 +2,15 @@
 
 [`한국어`](./README.md) / [`English`](./README.en.md)
 
-Open Session is a library that encrypts a short window of browser events before an error so the situation can be inspected later.
+Open Session is a library that encrypts a short window of browser events before an error so the situation at that moment can be inspected later.
 
-It does not record the screen. The SDK keeps only metadata in memory, such as clicks, input activity, route changes, network status, console logs, and errors. When the app calls `flushOpenSession()`, the SDK compacts, compresses, and encrypts the payload.
+It does not record the screen. The SDK keeps only metadata in memory, such as clicks, input activity, route changes, network status, console logs, and errors. When the app calls `flushOpenSession()`, the SDK reduces, compresses, and encrypts the payload.
 
 ## Features
 
 - See what happened before the user encountered an error.
-- Use it to inspect browser errors more closely.
-- Use it as a lightweight option when cost makes full SaaS collection difficult or forces heavy sampling elsewhere.
+- Use it to narrow down browser error causes more easily.
+- Use it as a lightweight option when cost makes full SaaS collection difficult or when another tool forces heavy sampling.
 - Receive generated payloads through webhooks or other channels, then inspect them in the Viewer.
 - Network headers/bodies and password values are not collected by default.
 
@@ -19,21 +19,21 @@ It does not record the screen. The SDK keeps only metadata in memory, such as cl
 1. Initialize `@open-session/sdk` in client-side app code.
 2. The SDK keeps selected events in an in-memory buffer.
 3. Call `flushOpenSession()` from an Error Boundary, global error handler, or manual report point.
-4. The SDK compacts, compresses, and encrypts the replay session.
+4. The SDK reduces, compresses, and encrypts the replay session.
 5. Open the payload in the [Viewer](https://yoziyo.github.io/open-session/viewer/) with the same passphrase.
 
 ## SDK example
 
 ### Fastest experience
 
-You can use the Viewer and sample site to check the returned payload and how it opens in the Viewer.
+Use the Viewer and sample site to check the returned payload and how it opens in the Viewer.
 
 - Viewer: https://yoziyo.github.io/open-session/viewer/
 - Sample app: https://yoziyo.github.io/open-session/sample/
 
 ### Installation
 
-Applications only need to install the SDK. `@open-session/protocol` contains the payload types, compact format, compression, and encryption envelope, and is installed as an SDK dependency.
+Applications only need the SDK. `@open-session/protocol` contains the payload types, compact format, compression, and encryption envelope, and is installed as an SDK dependency.
 
 ```bash
 pnpm add @open-session/sdk
@@ -41,11 +41,11 @@ npm install @open-session/sdk
 yarn add @open-session/sdk
 ```
 
-The Viewer is a separate tool for opening payloads. You do not need to install the Viewer in your app code.
+The Viewer is a separate tool used to open payloads. You do not need to install the Viewer in your app code.
 
 ### Quick start
 
-If the defaults are enough, pass only the required value and transport. Clicks, input activity, route changes, network, console, and error capture run by default.
+To start with the default setup, pass only the required value and transport. Clicks, input activity, route changes, network, console, and error capture run by default.
 
 ```ts
 import { captureError, flushOpenSession, initOpenSession } from "@open-session/sdk";
@@ -63,7 +63,7 @@ void flushOpenSession("error-boundary");
 
 ### Common example
 
-Start with the minimal setup first, then add only the options you need after checking real payloads.
+Start with the minimal setup first, then add only the options you need after checking actual payloads.
 
 ```ts
 import { captureError, flushOpenSession, initOpenSession } from "@open-session/sdk";

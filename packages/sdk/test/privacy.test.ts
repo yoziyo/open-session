@@ -443,7 +443,7 @@ describe("privacy defaults", () => {
     expect(json).not.toContain("sk-test-secret");
   });
 
-  it("applies caller-controlled string and object budgets", () => {
+  it("applies caller-controlled string budget and internal object budget", () => {
     const sanitized = sanitizeUnknown(
       {
         first: "a".repeat(50),
@@ -452,14 +452,15 @@ describe("privacy defaults", () => {
       },
       [],
       0,
-      { maxSanitizedStringLength: 8, maxConsoleObjectKeys: 2 },
+      { maxSanitizedStringLength: 8 },
     );
 
     const json = JSON.stringify(sanitized);
     expect(json).toContain("aaaaaaaa");
     expect(json).toContain("[truncated]");
     expect(json).toContain("visible");
-    expect(json).not.toContain("should-be-dropped-by-key-budget");
+    expect(json).toContain("third");
+    expect(json).toContain("should-b");
   });
 });
 
@@ -570,12 +571,11 @@ describe("sdk flush", () => {
     client.shutdown();
   });
 
-  it("limits console arguments before payload encode", async () => {
+  it("applies public string budget and internal console argument budget before payload encode", async () => {
     const payloads: string[] = [];
     const client = initOpenSession({
       appId: "test-app",
       passphrase: "demo-passphrase",
-      maxConsoleArgs: 2,
       maxSanitizedStringLength: 12,
       transport: (payload) => {
         payloads.push(payload);
@@ -590,7 +590,7 @@ describe("sdk flush", () => {
     const event = decoded.session.events.find((item) => item.kind === "console");
     expect(event).toMatchObject({
       kind: "console",
-      args: ["aaaaaaaaaaaa…[truncated]", { safe: "ok" }],
+      args: ["aaaaaaaaaaaa…[truncated]", { safe: "ok" }, "dropped"],
     });
     client.shutdown();
   });

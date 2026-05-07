@@ -1,6 +1,6 @@
 import type { ReplayBuffer } from "../buffer";
 import { type EventIdFactory, safeRandomId } from "../event-id";
-import { currentRedactedUrl, sanitizeString } from "../privacy/redact";
+import { currentRedactedUrl, DEFAULT_REDACTION_LIMITS, sanitizeString } from "../privacy/redact";
 import type { ReplayInitOptions } from "../types";
 
 export function errorToEvent(
@@ -19,8 +19,8 @@ export function errorToEvent(
     pageUrl: currentRedactedUrl(options),
     name: err.name,
     message: sanitizeString(err.message, redactions),
-    stack: err.stack ? sanitizeString(err.stack, redactions, options.maxErrorStackLength ?? 500) : undefined,
-    componentStack: componentStack ? sanitizeString(componentStack, redactions, options.maxComponentStackLength ?? 500) : undefined,
+    stack: err.stack ? sanitizeString(err.stack, redactions, DEFAULT_REDACTION_LIMITS.maxErrorStackLength) : undefined,
+    componentStack: componentStack ? sanitizeString(componentStack, redactions, DEFAULT_REDACTION_LIMITS.maxComponentStackLength) : undefined,
   } as const;
 }
 
