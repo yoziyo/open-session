@@ -100,6 +100,14 @@ captureError(error, { componentStack: info.componentStack });
 void flushOpenSession("error-boundary");
 ```
 
+## 관련 링크
+
+- 온라인 Viewer: https://yoziyo.github.io/open-session/viewer/
+- 온라인 Sample app: https://yoziyo.github.io/open-session/sample/
+- GitHub repository: https://github.com/yoziyo/open-session
+- npm SDK: https://www.npmjs.com/package/@open-session/sdk
+- npm Protocol: https://www.npmjs.com/package/@open-session/protocol
+
 ## 빠른 데모
 
 ```bash
