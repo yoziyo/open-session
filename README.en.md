@@ -20,9 +20,28 @@ It does not record the screen. The SDK keeps only metadata in memory, such as cl
 2. The SDK keeps selected events in an in-memory buffer.
 3. Call `flushOpenSession()` from an Error Boundary, global error handler, or manual report point.
 4. The SDK compacts, compresses, and encrypts the replay session.
-5. Open the payload in the Viewer with the same passphrase.
+5. Open the payload in the [Viewer](https://yoziyo.github.io/open-session/viewer/) with the same passphrase.
 
 ## SDK example
+
+### Fastest start
+
+You can use the Viewer and sample site to check the returned payload and how it opens in the Viewer.
+
+- Viewer: https://yoziyo.github.io/open-session/viewer/
+- Sample app: https://yoziyo.github.io/open-session/sample/
+
+### Installation
+
+Applications only need to install the SDK. `@open-session/protocol` contains the payload types, compact format, compression, and encryption envelope, and is installed as an SDK dependency.
+
+```bash
+pnpm add @open-session/sdk
+npm install @open-session/sdk
+yarn add @open-session/sdk
+```
+
+The Viewer is a separate tool for opening payloads. You do not need to install the Viewer in your app code.
 
 ### Quick start
 
